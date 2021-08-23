@@ -21,10 +21,10 @@ namespace BugTrackerV16.Entities
         public string Description { get; set; }
 
         [Column("ReportedByUserId")]
-        public int ReportedByUserID { get; set; }
+        public string ReportedByUserID { get; set; }
 
         [Column("AssignedToUserId")]
-        public int AssignedToUserID { get; set; }
+        public string AssignedToUserID { get; set; }
 
         [Column("Status")]
         public string Status { get; set; }

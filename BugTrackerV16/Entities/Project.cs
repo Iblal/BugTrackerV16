@@ -24,7 +24,13 @@ namespace BugTrackerV16.Entities
         public string CreatedDate { get; set; }
 
         [Column("ProjectManagerUserId")]
-        public int ProjectManagerUserId { get; set; }
+        public string ProjectManagerUserId { get; set; }
+
+        [NotMapped]
+        public virtual ICollection<BugTrackerV16User> Members { get; set; } = new HashSet<BugTrackerV16User>();
+       
+        [NotMapped]
+        public virtual ICollection<Ticket> Tickets { get; set; } = new HashSet<Ticket>();
 
     }
 }

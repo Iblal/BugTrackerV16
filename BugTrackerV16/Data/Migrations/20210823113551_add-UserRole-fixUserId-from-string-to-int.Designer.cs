@@ -4,14 +4,16 @@ using BugTrackerV16.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BugTrackerV16.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210823113551_add-UserRole-fixUserId-from-string-to-int")]
+    partial class addUserRolefixUserIdfromstringtoint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,8 +112,8 @@ namespace BugTrackerV16.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Name");
 
-                    b.Property<string>("ProjectManagerUserId")
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("ProjectManagerUserId")
+                        .HasColumnType("int")
                         .HasColumnName("ProjectManagerUserId");
 
                     b.HasKey("Id");
@@ -131,8 +133,8 @@ namespace BugTrackerV16.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("ProjectId");
 
-                    b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("UserID")
+                        .HasColumnType("int")
                         .HasColumnName("UserId");
 
                     b.Property<string>("UserRole")
@@ -152,8 +154,8 @@ namespace BugTrackerV16.Data.Migrations
                         .HasColumnName("Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AssignedToUserID")
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("AssignedToUserID")
+                        .HasColumnType("int")
                         .HasColumnName("AssignedToUserId");
 
                     b.Property<string>("CreatedDate")
@@ -172,8 +174,8 @@ namespace BugTrackerV16.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("ProjectID");
 
-                    b.Property<string>("ReportedByUserID")
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("ReportedByUserID")
+                        .HasColumnType("int")
                         .HasColumnName("ReportedByUserId");
 
                     b.Property<string>("Status")

@@ -11,8 +11,8 @@ namespace BugTracker.Services.Interfaces
         public BugTrackerV16User GetProjectManager(string projectManagerUserId);
         public List<BugTrackerV16User> GetAssignedProjectUsers(int projectId);
         public List<BugTrackerV16User> GetUnAssignedProjectUsers(int projectId);
-        public ProjectUser AddProjectUser(int projectId, string userId);
-        public ProjectUser RemoveProjectUser(int projectId, string userId);
+        public bool AddProjectUser(int projectId, string userId);
+        public bool RemoveProjectUser(int projectId, string userId);
 
     }
 }

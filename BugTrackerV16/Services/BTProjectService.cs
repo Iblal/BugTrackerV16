@@ -24,9 +24,21 @@ namespace BugTrackerV16.Services
             _userManager = userManager;
         }
 
-        public ProjectUser AddProjectUser(int projectId, string userId)
+        public bool AddProjectUser(int projectId, string userId)
         {
-            throw new NotImplementedException();
+            ProjectUser projectUser = new ProjectUser { UserID = userId, ProjectID = projectId };
+            
+            var addedProjectUser = _context.ProjectUsers.Add(projectUser);
+
+            if(addedProjectUser != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
         public List<BugTrackerV16User> GetAssignedProjectUsers(int projectId)
@@ -71,12 +83,34 @@ namespace BugTrackerV16.Services
 
         public List<BugTrackerV16User> GetUnAssignedProjectUsers(int projectId)
         {
-            throw new NotImplementedException();
+            List<BugTrackerV16User> AssignedProjectUsers = new List<BugTrackerV16User>();
+            List<BugTrackerV16User> UnAssignedProjectUsers = new List<BugTrackerV16User>();
+            List<BugTrackerV16User> AllUsers = new List<BugTrackerV16User>();
+
+            AllUsers = _userManager.Users.ToList();
+
+            AssignedProjectUsers = GetAssignedProjectUsers(projectId);
+
+            UnAssignedProjectUsers = (List<BugTrackerV16User>)AllUsers.Except(AssignedProjectUsers);
+
+            return UnAssignedProjectUsers;
+
         }
 
-        public ProjectUser RemoveProjectUser(int projectId, string userId)
+        public bool RemoveProjectUser(int projectId, string userId)
         {
-            throw new NotImplementedException();
+            ProjectUser projectUser = new ProjectUser { UserID = userId, ProjectID = projectId };
+
+            var removedProjectUser = _context.ProjectUsers.Remove(projectUser);
+
+            if (removedProjectUser != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
    

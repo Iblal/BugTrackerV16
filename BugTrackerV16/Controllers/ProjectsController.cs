@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTrackerV16.Data;
 using BugTrackerV16.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace BugTrackerV16.Controllers
 {
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<BugTrackerV16User> _userManager;
 
-        public ProjectsController(ApplicationDbContext context)
+        public ProjectsController(ApplicationDbContext context, UserManager<BugTrackerV16User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Projects
@@ -56,8 +59,17 @@ namespace BugTrackerV16.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,CreatedDate,ProjectManagerUserId")] Project project)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,CreatedDate,ProjectManagerUserId,ProjectManagerName")] Project project)
         {
+            DateTime currentDateTime = DateTime.Now;
+
+            project.CreatedDate = currentDateTime.ToString();
+
+            project.ProjectManagerUserId = _userManager.GetUserId(User);
+
+            project.ProjectManagerName = User.Identity.Name;
+
+
             if (ModelState.IsValid)
             {
                 _context.Add(project);

@@ -1,5 +1,7 @@
+using BugTracker.Services.Interfaces;
 using BugTrackerV16.Data;
 using BugTrackerV16.Entities;
+using BugTrackerV16.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -37,6 +39,9 @@ namespace BugTrackerV16
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
+            services.AddScoped<IBTProjectService, BTProjectService>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

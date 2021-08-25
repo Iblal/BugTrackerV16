@@ -1,4 +1,5 @@
 ﻿using BugTrackerV16.Entities;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace BugTracker.Services.Interfaces
     public interface IBTProjectService
     {
         public BugTrackerV16User GetProjectManager(string projectManagerUserId);
+        public List<BugTrackerV16User> GetUsersInRole(string roleName);
         public List<BugTrackerV16User> GetAssignedProjectUsers(int projectId);
         public List<BugTrackerV16User> GetUnAssignedProjectUsers(int projectId);
         public bool AddProjectUser(int projectId, string userId);

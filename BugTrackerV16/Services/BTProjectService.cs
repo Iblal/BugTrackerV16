@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BugTrackerV16.Services
 {
-    public class BTProjectService : IBTProjectService
+    public class BTProjectService : IBTProjectService 
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BugTrackerV16User> _userManager;
@@ -41,6 +41,7 @@ namespace BugTrackerV16.Services
 
         }
 
+
         public List<BugTrackerV16User> GetAssignedProjectUsers(int projectId)
         {
             List<BugTrackerV16User> AssignedProjectUsers = new List<BugTrackerV16User>();
@@ -50,17 +51,14 @@ namespace BugTrackerV16.Services
                 .Select(project => project.UserID)
                 .ToList();
 
-
-            foreach(var userid in AssignedProjectUserIds)
+        
+          /*  foreach(var userid in AssignedProjectUserIds)
             {
-                var projectUser = _context.Users
-                     .Where(user => user.Id == userid)
-                     .Select(user => user)
-                     .ToList();
 
-                AssignedProjectUsers.Add(projectUser[0]);
+               var user = 
+               
                 
-            }
+            } */
 
             return AssignedProjectUsers;
         }
@@ -69,16 +67,13 @@ namespace BugTrackerV16.Services
         {
             var projectmanager = _context.Users
                 .Where(user => user.Id == projectManagerUserId)
-                .ToList();
+                .FirstOrDefault();
 
-            if (projectmanager != null)
-            {
-                return projectmanager[0];
-            }
-            else
-            {
-                return null;
-            }
+            
+            
+                return projectmanager;
+            
+           
         }
 
         public List<BugTrackerV16User> GetUnAssignedProjectUsers(int projectId)
@@ -95,35 +90,6 @@ namespace BugTrackerV16.Services
 
             return UnAssignedProjectUsers;
 
-        }
-
-        public List<BugTrackerV16User> GetUsersInRole(string roleName)
-        {
-            List<BugTrackerV16User> UsersInRole = new List<BugTrackerV16User>();
-
-            var RoleId = _context.Roles
-                .Where(r => r.Name == roleName)
-                .Select(r => r.Id)
-                .ToString();
-
-            var UserRoleList = _context.UserRoles
-                .Where(ur => ur.RoleId == RoleId)
-                .Select(ur => ur.UserId)
-                .ToList();
-
-            foreach (var userid in UserRoleList)
-            {
-                var projectUser = _context.Users
-                     .Where(user => user.Id == userid)
-                     .Select(user => user)
-                     .ToList();
-
-                UsersInRole.Add(projectUser[0]);
-
-            }
-
-
-            return UsersInRole;
         }
 
         public bool RemoveProjectUser(int projectId, string userId)

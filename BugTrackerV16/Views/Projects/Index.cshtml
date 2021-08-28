@@ -30,7 +30,7 @@
             </th>
             <th>
                 Created Date
-            </th>
+            </th> 
 
             <th></th>
         </tr>
@@ -41,6 +41,7 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
+                    @BTProjectService.
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
@@ -53,6 +54,7 @@
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Assign Users</a>
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>

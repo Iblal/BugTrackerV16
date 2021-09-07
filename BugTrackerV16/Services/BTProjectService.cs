@@ -2,6 +2,7 @@
 using BugTrackerV16.Data;
 using BugTrackerV16.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,20 +19,24 @@ namespace BugTrackerV16.Services
 
 
 
+
         public BTProjectService(ApplicationDbContext context, UserManager<BugTrackerV16User> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
+        
         public bool AddProjectUser(int projectId, string userId)
         {
-            ProjectUser projectUser = new ProjectUser { UserID = userId, ProjectID = projectId };
-            
-            var addedProjectUser = _context.ProjectUsers.Add(projectUser);
+              
+            ProjectUser projectUser = new ProjectUser { ProjectID = projectId, UserID = userId};   
 
-            if(addedProjectUser != null)
+            var addProjectUser = _context.ProjectUsers.Add(projectUser);
+
+            if (addProjectUser != null)
             {
+                _context.SaveChanges();
                 return true;
             }
             else
@@ -42,70 +47,85 @@ namespace BugTrackerV16.Services
         }
 
 
-        public List<BugTrackerV16User> GetAssignedProjectUsers(int projectId)
+        public List<BugTrackerV16User> GetUsersAssignedToProject(int projectId)
         {
             List<BugTrackerV16User> AssignedProjectUsers = new List<BugTrackerV16User>();
 
             var AssignedProjectUserIds = _context.ProjectUsers
-                .Where(project => project.Id == projectId)
+                .Where(project => project.ProjectID == projectId)
                 .Select(project => project.UserID)
                 .ToList();
 
         
-          /*  foreach(var userid in AssignedProjectUserIds)
+            foreach(var userid in AssignedProjectUserIds)
             {
 
-               var user = 
-               
-                
-            } */
+               var user = _context.Users
+                    .Where(user => user.Id == userid)
+                    .FirstOrDefault();
+
+                AssignedProjectUsers.Add(user);
+            } 
 
             return AssignedProjectUsers;
         }
 
-        public BugTrackerV16User GetProjectManager(string projectManagerUserId)
+        public List<BugTrackerV16User> GetUsersNotAssignedToProject(int projectId)
         {
-            var projectmanager = _context.Users
-                .Where(user => user.Id == projectManagerUserId)
-                .FirstOrDefault();
+            List<BugTrackerV16User> UnAssignedUsers = new List<BugTrackerV16User>();
 
-            
-            
-                return projectmanager;
-            
-           
+            var AllUserIds = _userManager.Users
+                .Select(user => user.Id)
+                .ToList();
+
+            var AssignedUserIds = _context.ProjectUsers
+                .Where(project => project.ProjectID == projectId)
+                .Select(project => project.UserID)
+                .ToList();
+
+            var UnAssignedUserIds = AllUserIds.Except(AssignedUserIds);
+
+            foreach (var userId in UnAssignedUserIds)
+            {
+                
+                var user = _context.Users
+                     .Where(user => user.Id == userId)
+                     .FirstOrDefault();
+
+                UnAssignedUsers.Add(user);
+            }
+
+            return UnAssignedUsers;
+
         }
 
-        public List<BugTrackerV16User> GetUnAssignedProjectUsers(int projectId)
-        {
-            List<BugTrackerV16User> AssignedProjectUsers = new List<BugTrackerV16User>();
-            List<BugTrackerV16User> UnAssignedProjectUsers = new List<BugTrackerV16User>();
-            List<BugTrackerV16User> AllUsers = new List<BugTrackerV16User>();
-
-            AllUsers = _userManager.Users.ToList();
-
-            AssignedProjectUsers = GetAssignedProjectUsers(projectId);
-
-            UnAssignedProjectUsers = (List<BugTrackerV16User>)AllUsers.Except(AssignedProjectUsers);
-
-            return UnAssignedProjectUsers;
-
-        }
-
+        
         public bool RemoveProjectUser(int projectId, string userId)
         {
-            ProjectUser projectUser = new ProjectUser { UserID = userId, ProjectID = projectId };
+            var projectUser = _context.ProjectUsers
+                .Where(ProjectUser => ProjectUser.UserID == userId && ProjectUser.ProjectID == projectId)
+                .FirstOrDefault();
 
             var removedProjectUser = _context.ProjectUsers.Remove(projectUser);
 
             if (removedProjectUser != null)
             {
+                _context.SaveChanges();
                 return true;
             }
             else
             {
                 return false;
             }
+        }
+
+        public Project GetProject(int projectId)
+        {
+            var project = _context.Projects
+                .Where(project => project.Id == projectId)
+                .FirstOrDefault();
+
+            return project;
         }
     }
    

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BugTracker.Services.Interfaces;
+using BugTrackerV16.Models;
+using BugTrackerV16.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,79 +12,43 @@ namespace BugTrackerV16.Controllers
 {
     public class ProjectUsersController : Controller
     {
-        // GET: ProjectUsersController
-        public ActionResult Index()
+        private IBTProjectService _btProjectService;
+
+        public ProjectUsersController(IBTProjectService btProjectService)
         {
-            return View();
+            _btProjectService = btProjectService;
         }
 
-        // GET: ProjectUsersController/Details/5
-        public ActionResult Details(int id)
+       
+        public IActionResult AssignUsers(int projectId)
         {
-            return View();
+            
+                AssignUsers assignUsers = new AssignUsers();
+
+                assignUsers.ProjectId = _btProjectService.GetProject(projectId).Id;
+                assignUsers.ProjectName = _btProjectService.GetProject(projectId).Name;
+                assignUsers.UsersAssignedtoProject = _btProjectService.GetUsersAssignedToProject(projectId);
+                assignUsers.UsersNotAssignedToProject = _btProjectService.GetUsersNotAssignedToProject(projectId);
+
+              return View(assignUsers);
         }
 
-        // GET: ProjectUsersController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
 
-        // POST: ProjectUsersController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult AddUserToProject(AssignUsers model)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            _btProjectService.AddProjectUser(model.ProjectId, model.UserToAddId);
+                
+
+            return RedirectToAction("AssignUsers", new { projectId = model.ProjectId });
         }
 
-        // GET: ProjectUsersController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ProjectUsersController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public IActionResult RemoveUserFromProject(AssignUsers model)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+            _btProjectService.RemoveProjectUser(model.ProjectId, model.UserToRemoveId);
 
-        // GET: ProjectUsersController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ProjectUsersController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction("AssignUsers", new { projectId = model.ProjectId });
         }
     }
 }

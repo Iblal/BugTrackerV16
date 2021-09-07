@@ -20,7 +20,5 @@ namespace BugTrackerV16.Entities
         [Column("UserId")]
         public string UserID { get; set; }
 
-        [Column("UserRole")]
-        public string UserRole { get; set; }
     }
 }

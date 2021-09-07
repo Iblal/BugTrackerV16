@@ -9,9 +9,9 @@ namespace BugTracker.Services.Interfaces
 {
     public interface IBTProjectService
     {
-        public BugTrackerV16User GetProjectManager(string projectManagerUserId);
-        public List<BugTrackerV16User> GetAssignedProjectUsers(int projectId);
-        public List<BugTrackerV16User> GetUnAssignedProjectUsers(int projectId);
+        public Project GetProject(int projectId);
+        public List<BugTrackerV16User> GetUsersAssignedToProject(int projectId);
+        public List<BugTrackerV16User> GetUsersNotAssignedToProject(int projectId);
         public bool AddProjectUser(int projectId, string userId);
         public bool RemoveProjectUser(int projectId, string userId);
 

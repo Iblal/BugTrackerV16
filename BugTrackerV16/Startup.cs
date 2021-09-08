@@ -1,4 +1,4 @@
-using BugTracker.Services.Interfaces;
+using BugTrackerV16.Services.Interfaces;
 using BugTrackerV16.Data;
 using BugTrackerV16.Entities;
 using BugTrackerV16.Services;
@@ -35,13 +35,13 @@ namespace BugTrackerV16
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<BugTrackerV16User>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<BugTrackerV16User>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddScoped<IBTProjectService, BTProjectService>();
-
-
+            services.AddScoped<IBTHelperService, HelperFunctionsService>();
+                
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -4,14 +4,16 @@ using BugTrackerV16.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BugTrackerV16.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210908130642_changed-ticket-class-properties")]
+    partial class changedticketclassproperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,8 +155,7 @@ namespace BugTrackerV16.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AssignedToUser")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("AssignedToUser");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedDate")
                         .HasColumnType("nvarchar(max)")
@@ -168,17 +169,11 @@ namespace BugTrackerV16.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Name");
 
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int")
-                        .HasColumnName("ProjectId");
-
-                    b.Property<string>("ProjectName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ProjectName");
+                    b.Property<string>("Project")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReportedByUser")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ReportedByUser");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)")

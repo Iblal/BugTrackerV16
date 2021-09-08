@@ -20,17 +20,20 @@ namespace BugTrackerV16.Entities
         [Column("Description")]
         public string Description { get; set; }
 
-        [Column("ReportedByUserId")]
-        public string ReportedByUserID { get; set; }
+        [Column("ReportedByUser")]
+        public string ReportedByUser { get; set; }
 
-        [Column("AssignedToUserId")]
-        public string AssignedToUserID { get; set; }
+        [Column("AssignedToUser")]
+        public string AssignedToUser { get; set; }
 
         [Column("Status")]
         public string Status { get; set; }
 
-        [Column("ProjectID")]
-        public int ProjectID { get; set; }
+        [Column("ProjectName")]
+        public string ProjectName { get; set; }
+
+        [Column("ProjectId")]
+        public int ProjectId { get; set; }
 
         [Column("CreatedDate")]
         public string CreatedDate { get; set; }

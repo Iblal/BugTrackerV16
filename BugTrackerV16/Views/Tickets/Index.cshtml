@@ -1,17 +1,21 @@
 ﻿@using BugTrackerV16.Services.Interfaces;
-@inject IBTProjectService BTProjectService
-@model IEnumerable<BugTrackerV16.Entities.Project>
 
+@inject IBTProjectService BTProjectService
+@inject IBTHelperService HelperFunctionsService  
+ 
+@model IEnumerable<BugTrackerV16.Entities.Ticket>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>My Projects</h1>
-@if (User.IsInRole("ProjectManager"))
+<h1>My tickets</h1>
+
+@if (User.IsInRole("ProjectManager") || User.IsInRole("Submitter"))
 {
     <p>
+
         <a asp-action="Create">Create New</a>
     </p>
 }
@@ -26,12 +30,20 @@
                 Description
             </th>
             <th>
-                Project Manager
+                Reported By
+            </th>
+            <th>
+                Assigned To
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Project
             </th>
             <th>
                 Created Date
-            </th> 
-
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -41,25 +53,31 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
-                    
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProjectManagerName);
+                    @Html.DisplayFor(modelItem => item.ReportedByUser)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AssignedToUser)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedDate)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a href=@Url.Action("AssignUsers", "ProjectUsers", new { projectId = item.Id })>Assign Users</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                    <a href=@Url.Action("ProjectTicketsIndex", "Tickets", new { projectId = item.Id })>View Project Tickets</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
-         }
+        }
     </tbody>
 </table>

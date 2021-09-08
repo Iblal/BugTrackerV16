@@ -1,4 +1,4 @@
-﻿using BugTracker.Services.Interfaces;
+﻿using BugTrackerV16.Services.Interfaces;
 using BugTrackerV16.Data;
 using BugTrackerV16.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -126,6 +126,13 @@ namespace BugTrackerV16.Services
                 .FirstOrDefault();
 
             return project;
+        }
+
+        public List<Project> GetAllProjects()
+        {
+            var allProjects = _context.Projects.ToList();
+
+            return allProjects;
         }
     }
    

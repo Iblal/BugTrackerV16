@@ -8,29 +8,47 @@ using Microsoft.EntityFrameworkCore;
 using BugTrackerV16.Data;
 using BugTrackerV16.Entities;
 using Microsoft.AspNetCore.Identity;
+using BugTrackerV16.Services.Interfaces;
 
 namespace BugTrackerV16.Controllers
 {
-    public class ProjectsController : Controller
+    public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BugTrackerV16User> _userManager;
+        private readonly IBTHelperService _BTHelperService;
+        private readonly IBTProjectService _projectService;
 
-        public ProjectsController(ApplicationDbContext context, UserManager<BugTrackerV16User> userManager)
+        public TicketsController(ApplicationDbContext context, UserManager<BugTrackerV16User> userManager, IBTHelperService BTHelperService, IBTProjectService ProjectService)
         {
             _context = context;
             _userManager = userManager;
+            _BTHelperService = BTHelperService;
+            _projectService = ProjectService;
         }
 
-        // GET: Projects
+        // GET: Tickets
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Projects.ToListAsync());
+            return View(await _context.Tickets
+                .Where(ticket => ticket.AssignedToUser == _BTHelperService.GetUser(_userManager.GetUserId(User)).FirstName)
+                .ToListAsync());
+            
+                
+        }
+
+        public async Task<IActionResult> ProjectTicketsIndex(int projectId)
+        {
+                   
+            return View(await _context.Tickets
+                .Where(ticket => ticket.ProjectId == projectId)
+                .ToListAsync());
+            
         }
 
 
 
-        // GET: Projects/Details/5
+        // GET: Tickets/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -38,50 +56,49 @@ namespace BugTrackerV16.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects
+            var ticket = await _context.Tickets
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (project == null)
+            if (ticket == null)
             {
                 return NotFound();
             }
 
-            return View(project);
+            return View(ticket);
         }
 
-        // GET: Projects/Create
+        // GET: Tickets/Create
         public IActionResult Create()
         {
-            
-
             return View();
         }
 
-        // POST: Projects/Create
+        // POST: Tickets/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,CreatedDate,ProjectManagerUserId,ProjectManagerName")] Project project)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,ReportedByUser,AssignedToUser,Status,ProjectId,CreatedDate")] Ticket ticket)
         {
+
+            ticket.ReportedByUser = _BTHelperService.GetUser(_userManager.GetUserId(User)).FirstName;
+            ticket.Status = "Unresolved";
+            ticket.ProjectName = _projectService.GetProject(ticket.ProjectId).Name;
+            
+
             DateTime currentDateTime = DateTime.Now;
-
-            project.CreatedDate = currentDateTime.ToString();
-
-            project.ProjectManagerUserId = _userManager.GetUserId(User);
-
-            project.ProjectManagerName = User.Identity.Name;
+            ticket.CreatedDate = currentDateTime.ToString();
 
 
             if (ModelState.IsValid)
             {
-                _context.Add(project);
+                _context.Add(ticket);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(project);
+            return View(ticket);
         }
 
-        // GET: Projects/Edit/5
+        // GET: Tickets/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,22 +106,22 @@ namespace BugTrackerV16.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects.FindAsync(id);
-            if (project == null)
+            var ticket = await _context.Tickets.FindAsync(id);
+            if (ticket == null)
             {
                 return NotFound();
             }
-            return View(project);
+            return View(ticket);
         }
 
-        // POST: Projects/Edit/5
+        // POST: Tickets/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,CreatedDate,ProjectManagerUserId")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ReportedByUserID,AssignedToUserID,Status,ProjectID,CreatedDate")] Ticket ticket)
         {
-            if (id != project.Id)
+            if (id != ticket.Id)
             {
                 return NotFound();
             }
@@ -113,12 +130,12 @@ namespace BugTrackerV16.Controllers
             {
                 try
                 {
-                    _context.Update(project);
+                    _context.Update(ticket);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjectExists(project.Id))
+                    if (!TicketExists(ticket.Id))
                     {
                         return NotFound();
                     }
@@ -129,10 +146,10 @@ namespace BugTrackerV16.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(project);
+            return View(ticket);
         }
 
-        // GET: Projects/Delete/5
+        // GET: Tickets/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,30 +157,30 @@ namespace BugTrackerV16.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects
+            var ticket = await _context.Tickets
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (project == null)
+            if (ticket == null)
             {
                 return NotFound();
             }
 
-            return View(project);
+            return View(ticket);
         }
 
-        // POST: Projects/Delete/5
+        // POST: Tickets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var project = await _context.Projects.FindAsync(id);
-            _context.Projects.Remove(project);
+            var ticket = await _context.Tickets.FindAsync(id);
+            _context.Tickets.Remove(ticket);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProjectExists(int id)
+        private bool TicketExists(int id)
         {
-            return _context.Projects.Any(e => e.Id == id);
+            return _context.Tickets.Any(e => e.Id == id);
         }
     }
 }

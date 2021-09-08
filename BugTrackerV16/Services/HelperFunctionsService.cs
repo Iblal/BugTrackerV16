@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BugTrackerV16.Services
 {
-    public class HelperFunctionsService : IBTHelperFunctions
+    public class HelperFunctionsService : IBTHelperService
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BugTrackerV16User> _userManager;

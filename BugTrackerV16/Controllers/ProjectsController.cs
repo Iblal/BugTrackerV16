@@ -113,7 +113,24 @@ namespace BugTrackerV16.Controllers
             {
                 try
                 {
-                    _context.Update(project);
+                    if(project.Name != null)
+                    {
+
+                        var projectEntity = _context.Projects.First(project => project.Id == id);
+                        projectEntity.Name = project.Name;
+                        _context.SaveChanges();
+
+                    }
+                    
+                    if(project.Description != null)
+                    {
+                        var projectEntity = _context.Projects.First(project => project.Id == id);
+                        projectEntity.Description = project.Description;
+                        _context.SaveChanges();
+                    }
+
+                    
+                    
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

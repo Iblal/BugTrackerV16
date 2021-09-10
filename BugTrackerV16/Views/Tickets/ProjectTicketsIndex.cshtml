@@ -10,13 +10,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
 <h1>Project Tickets</h1>
+
+
 
 @if (User.IsInRole("ProjectManager") || User.IsInRole("Submitter"))
 {
     <p>
 
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create">Create New Ticket</a>
     </p>
 }
 
@@ -81,3 +84,6 @@
         }
     </tbody>
 </table>
+<div>
+    <a asp-controller="Projects" asp-action="Index">Back to my projects</a>
+</div>

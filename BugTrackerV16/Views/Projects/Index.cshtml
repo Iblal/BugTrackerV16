@@ -1,5 +1,6 @@
 ﻿@using BugTrackerV16.Services.Interfaces;
 @inject IBTProjectService BTProjectService
+@inject IBTHelperService HelperService 
 @model IEnumerable<BugTrackerV16.Entities.Project>
 
 
@@ -47,7 +48,7 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProjectManagerName);
+                    @Html.DisplayFor(modelItem => HelperService.GetUser(item.ProjectManagerUserId).FirstName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedDate)

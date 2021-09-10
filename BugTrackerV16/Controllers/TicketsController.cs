@@ -130,7 +130,35 @@ namespace BugTrackerV16.Controllers
             {
                 try
                 {
-                    _context.Update(ticket);
+                    if (ticket.Name != null)
+                    {
+
+                        var ticketEntity = _context.Tickets.First(ticket => ticket.Id == id);
+                        ticketEntity.Name = ticket.Name;
+                        _context.SaveChanges();
+
+                    }
+
+                    if (ticket.Description != null)
+                    {
+                        var ticketEntity = _context.Tickets.First(ticket => ticket.Id == id);
+                        ticketEntity.Description = ticket.Description;
+                        _context.SaveChanges();
+                    }
+
+                    if (ticket.AssignedToUser != null)
+                    {
+                        var ticketEntity = _context.Tickets.First(ticket => ticket.Id == id);
+                        ticketEntity.AssignedToUser = ticket.AssignedToUser;
+                        _context.SaveChanges();
+                    }
+
+                    if (ticket.Status != null)
+                    {
+                        var ticketEntity = _context.Tickets.First(ticket => ticket.Id == id);
+                        ticketEntity.Status = ticket.Status;
+                        _context.SaveChanges();
+                    }
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

@@ -1,4 +1,9 @@
-﻿@model BugTrackerV16.Entities.Project
+﻿@using Microsoft.AspNetCore.Identity
+@using BugTrackerV16.Entities;
+
+@model BugTrackerV16.Entities.Project
+
+@inject UserManager<BugTrackerV16User> _userManager
 
 @{
     ViewData["Title"] = "Edit";
@@ -23,16 +28,6 @@
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProjectManagerUserId" class="control-label"></label>
-                <input asp-for="ProjectManagerUserId" class="form-control" />
-                <span asp-validation-for="ProjectManagerUserId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

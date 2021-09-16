@@ -28,7 +28,7 @@ namespace BugTrackerV16.Controllers
         }
 
         // GET: Tickets
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> myTicketsIndex()
         {
             return View(await _context.Tickets
                 .Where(ticket => ticket.AssignedToUser == _BTHelperService.GetUser(_userManager.GetUserId(User)).FirstName)
@@ -93,9 +93,9 @@ namespace BugTrackerV16.Controllers
             {
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("myTicketsIndex");
             }
-            return View(ticket);
+            return RedirectToAction("myTicketsIndex");
         }
 
         // GET: Tickets/Edit/5
@@ -172,9 +172,11 @@ namespace BugTrackerV16.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction("myTicketsIndex");
             }
-            return View(ticket);
+
+            return RedirectToAction("myTicketsIndex");
         }
 
         // GET: Tickets/Delete/5
@@ -203,7 +205,7 @@ namespace BugTrackerV16.Controllers
             var ticket = await _context.Tickets.FindAsync(id);
             _context.Tickets.Remove(ticket);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("myTicketsIndex");
         }
 
         private bool TicketExists(int id)

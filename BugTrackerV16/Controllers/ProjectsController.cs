@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using BugTrackerV16.Data;
 using BugTrackerV16.Entities;
 using Microsoft.AspNetCore.Identity;
+using BugTrackerV16.Services.Interfaces;
+using System.Security.Claims;
 
 namespace BugTrackerV16.Controllers
 {
@@ -15,17 +17,50 @@ namespace BugTrackerV16.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BugTrackerV16User> _userManager;
+        private readonly IBTHelperService _BTHelperService;
+        private readonly IBTProjectService _projectService;
 
-        public ProjectsController(ApplicationDbContext context, UserManager<BugTrackerV16User> userManager)
+
+        public ProjectsController(ApplicationDbContext context, UserManager<BugTrackerV16User> userManager, IBTHelperService BTHelperService, IBTProjectService ProjectService)
         {
             _context = context;
             _userManager = userManager;
+            _BTHelperService = BTHelperService;
+            _projectService = ProjectService;
         }
 
         // GET: Projects
         public async Task<IActionResult> Index()
         {
             return View(await _context.Projects.ToListAsync());
+        }
+
+        public async Task<IActionResult> myProjectsIndex()
+        {
+            List<Project> UserProjects = new List<Project>();
+
+            var userId = _userManager.GetUserId(User);
+
+            var UserProjectIds = _context.ProjectUsers
+                .Where(projectuser => projectuser.UserID == userId)
+                .Select(projectuser => projectuser.ProjectID)
+                .ToListAsync();
+
+            foreach (var projectId in await UserProjectIds)
+            {
+
+                var project = _context.Projects
+                     .Where(project => project.Id == projectId)
+                     .FirstOrDefault();
+
+                if(project != null)
+                {
+                    UserProjects.Add(project);
+                }
+               
+            }
+
+            return View(UserProjects);
         }
 
 
@@ -71,11 +106,16 @@ namespace BugTrackerV16.Controllers
 
             project.ProjectManagerName = User.Identity.Name;
 
+            
+
 
             if (ModelState.IsValid)
             {
                 _context.Add(project);
                 await _context.SaveChangesAsync();
+
+                _projectService.AddProjectUser(project.Id, project.ProjectManagerUserId);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(project);

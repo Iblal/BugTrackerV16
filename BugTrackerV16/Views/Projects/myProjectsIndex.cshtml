@@ -1,0 +1,78 @@
+﻿@using BugTrackerV16.Services.Interfaces;
+@inject IBTProjectService BTProjectService
+@inject IBTHelperService HelperService 
+@model IEnumerable<BugTrackerV16.Entities.Project>
+
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>My Projects</h1>
+@if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Project Manager
+            </th>
+            <th>
+                Created Date
+            </th> 
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                    
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => HelperService.GetUser(item.ProjectManagerUserId).FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+                <td>
+                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit |</a> 
+}
+
+                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                    {
+                        <a href=@Url.Action("AssignUsers", "ProjectUsers", new { projectId = item.Id })>Assign Users |</a> 
+}
+
+                    <a asp-action="Details" asp-route-id="@item.Id">Details |</a> 
+
+                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete |</a>
+                    }
+                    <a href=@Url.Action("ProjectTicketsIndex", "Tickets", new { projectId = item.Id })>View Project Tickets</a> 
+                </td>
+            </tr>
+         }
+    </tbody>
+</table>

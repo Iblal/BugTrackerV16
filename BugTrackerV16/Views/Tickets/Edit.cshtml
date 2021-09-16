@@ -59,9 +59,8 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to my tickets</a>
-    
-
+    <a asp-action="myTicketsIndex">Back to my tickets</a>
+    <a href=@Url.Action("ProjectTicketsIndex", "Tickets", new { projectId = Model.ProjectId })> Back to project tickets</a>
 </div>
 
 @section Scripts {

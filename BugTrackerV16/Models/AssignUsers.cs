@@ -17,6 +17,7 @@ namespace BugTrackerV16.Models
         public List<BugTrackerV16User> UsersNotAssignedToProject { get; set; }
         public string UserToAddId { get; set; }
         public string UserToRemoveId { get; set; }
+        public string ErrorMessage { get; set; }
 
     }
 }

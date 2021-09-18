@@ -1,6 +1,11 @@
 ﻿@using BugTrackerV16.Services.Interfaces;
+@using BugTrackerV16.Entities; 
+@using Microsoft.AspNetCore.Identity;
+
+ 
 @inject IBTProjectService BTProjectService
 @inject IBTHelperService HelperService 
+@inject UserManager<BugTrackerV16User> _userManager
 @model IEnumerable<BugTrackerV16.Entities.Project>
 
 
@@ -59,7 +64,7 @@
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit |</a> 
 }
 
-                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                    @if (item.ProjectManagerUserId == _userManager.GetUserId(User))
                     {
                         <a href=@Url.Action("AssignUsers", "ProjectUsers", new { projectId = item.Id })>Assign Users |</a> 
 }

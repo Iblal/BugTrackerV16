@@ -1,4 +1,12 @@
-﻿@model BugTrackerV16.Models.AssignUsers
+﻿@using BugTrackerV16.Services.Interfaces
+@using BugTrackerV16.Entities
+@using Microsoft.AspNetCore.Identity 
+
+@model BugTrackerV16.Models.AssignUsers
+@inject IBTProjectService _btProjectService 
+@inject IBTHelperService _btHelperService 
+@inject UserManager<BugTrackerV16User> _userManager 
+
 
 @{
     ViewBag.Title = "Edit Roles";
@@ -6,53 +14,75 @@
 
 <h2>Assign Users</h2>
 
-    <div class="form-horizontal">
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DisplayFor(model => model.ProjectName, new { htmlAttributes = new { @class = "control-label form-control" } })
-            </div>
+@if(Model.ErrorMessage != null)
+ {
+   <p class="text-danger">@Model.ErrorMessage</p>
+ } 
+<div class="form-horizontal">
+    <div class="form-group">
+        <label>Project Name</label>
+        <div class="col-md-10">
+            <p>@Model.ProjectName</p>
         </div>
-        <div class="form-group">
-               <label>Assigned Users</label>
-               <div class="col-md-2">
-                   @using (Html.BeginForm("RemoveUserFromProject", "ProjectUsers", new { projectId = Model.ProjectId, userId = Model.UserToRemoveId }, FormMethod.Post))
-                   {
-                   <div class="form-group">
-                       <select asp-for="UserToRemoveId" Name="UserToRemoveId" Size="@Model.UsersAssignedtoProject.ToArray().Length;">
-                           @foreach (var user in Model.UsersAssignedtoProject)
-                           { 
-                               <option value="@user.Id">@user.FirstName.ToString() @user.LastName.ToString()</option>
-                           }
-                       </select>
-                       <div class="col-md-2">
-                           <input type="submit" value="Remove Selected User" name="RemoveUserFromProject" class="btn btn-primary" onclick= @Url.Action("RemoveUserFromProject", "ProjectUsers", new { projectId = Model.ProjectId, userId = Model.UserToRemoveId }) />
-                       </div>
-                   </div>
-                   }
-               </div>
+    </div>
+    <div class="form-group">
+        <label>Project Manager</label>
+        <div class="col-md-10">
+            <p>@_btHelperService.GetUser(_btProjectService.GetProject(Model.ProjectId).ProjectManagerUserId).FirstName</p>
         </div>
-        <div class="form-group">
-            <label>Assigned Users</label>
-            <div class="col-md-2">
-                @using (Html.BeginForm("AddUserToProject", "ProjectUsers", new { projectId = Model.ProjectId, userId = Model.UserToAddId }, FormMethod.Post))
-                {
-                    <div class="form-group">
+    </div>
+    <div class="form-group">
+        <label>Assigned Users</label>
+        <div class="col-md-2">
+            @using (Html.BeginForm("RemoveUserFromProject", "ProjectUsers", new { projectId = Model.ProjectId, userId = Model.UserToRemoveId }, FormMethod.Post))
+            {
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <select asp-for="UserToRemoveId" Name="UserToRemoveId" Size="@Model.UsersAssignedtoProject.ToArray().Length;">
+                            @foreach (var user in Model.UsersAssignedtoProject)
+                            {
+                                @if (user.Id != _userManager.GetUserId(User))
+                                {
+                                    <option value="@user.Id">@user.FirstName.ToString() @user.LastName.ToString()</option>
+                                }
+
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="submit" value="Remove Selected User" name="RemoveUserFromProject" class="btn btn-primary mt-3" onclick=@Url.Action("RemoveUserFromProject", "ProjectUsers", new { projectId = Model.ProjectId, userId = Model.UserToRemoveId }) />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Unassigned Users</label>
+        <div class="col-md-2">
+            @using (Html.BeginForm("AddUserToProject", "ProjectUsers", new { projectId = Model.ProjectId, userId = Model.UserToAddId }, FormMethod.Post))
+            {
+                <div class="form-group">
+                    <div class="col-md-2">
                         <select asp-for="UserToAddId" Name="UserToAddId" Size="@Model.UsersNotAssignedToProject.ToArray().Length;">
                             @foreach (var user in Model.UsersNotAssignedToProject)
                             {
-                                <option value="@user.Id">@user.FirstName.ToString() @user.LastName.ToString()</option>
+                                @if (user.Id != _userManager.GetUserId(User))
+                                {
+                                    <option value="@user.Id">@user.FirstName.ToString() @user.LastName.ToString()</option>
+                                }
+                                    
                             }
                         </select>
-                        <div class="col-md-2">
-                            <input type="submit" value="Add Selected User" name="AddUserFromProject" class="btn btn-primary" onclick=@Url.Action("AddUserToProject", "ProjectUsers", new { projectId = Model.ProjectId, userId = Model.UserToAddId }) />
-                        </div>
                     </div>
-                }
-            </div>
+                    <div class="col-md-2">
+                        <input type="submit" value="Add Selected User" name="AddUserFromProject" class="btn btn-primary mt-3" onclick=@Url.Action("AddUserToProject", "ProjectUsers", new { projectId = Model.ProjectId, userId = Model.UserToAddId }) />
+                    </div>
+                </div>
+            }
         </div>
-        
-     </div>
+    </div>
+
+</div>
 
 <p>
     @Html.ActionLink("Back to my Projects", "myProjectsIndex", "Projects")

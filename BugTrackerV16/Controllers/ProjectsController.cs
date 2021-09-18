@@ -199,6 +199,8 @@ namespace BugTrackerV16.Controllers
 
             var project = await _context.Projects
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+
             if (project == null)
             {
                 return NotFound();
@@ -212,8 +214,21 @@ namespace BugTrackerV16.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+
             var project = await _context.Projects.FindAsync(id);
             _context.Projects.Remove(project);
+
+            var projectUsers = _context.ProjectUsers
+                .Where(projectUser => projectUser.ProjectID == id)
+                .ToList();
+            _context.ProjectUsers.RemoveRange(projectUsers);
+
+            var projectTickets = _context.Tickets
+                .Where(ticket => ticket.ProjectId == id)
+                .ToList();
+            _context.Tickets.RemoveRange(projectTickets);
+
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

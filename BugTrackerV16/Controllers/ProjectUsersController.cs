@@ -38,18 +38,56 @@ namespace BugTrackerV16.Controllers
         [HttpPost]
         public IActionResult AddUserToProject(AssignUsers model)
         {
-            _btProjectService.AddProjectUser(model.ProjectId, model.UserToAddId);
-                
+            int projectId = model.ProjectId;
+            
+            if(model.UserToAddId != null)
+            {
+                _btProjectService.AddProjectUser(model.ProjectId, model.UserToAddId);
+                return RedirectToAction("AssignUsers", new { projectId = model.ProjectId });
+            }
+            else
+            {
+                AssignUsers assignUsers = new AssignUsers();
 
-            return RedirectToAction("AssignUsers", new { projectId = model.ProjectId });
+                assignUsers.ProjectId = _btProjectService.GetProject(projectId).Id;
+                assignUsers.ProjectName = _btProjectService.GetProject(projectId).Name;
+                assignUsers.UsersAssignedtoProject = _btProjectService.GetUsersAssignedToProject(projectId);
+                assignUsers.UsersNotAssignedToProject = _btProjectService.GetUsersNotAssignedToProject(projectId);
+                assignUsers.ErrorMessage = "Invalid option. Please select valid option.";
+
+                return View(@"Views\ProjectUsers\AssignUsers.cshtml", assignUsers);
+            }
+            
+
+            
         }
 
         [HttpPost]
         public IActionResult RemoveUserFromProject(AssignUsers model)
         {
-            _btProjectService.RemoveProjectUser(model.ProjectId, model.UserToRemoveId);
+            int projectId = model.ProjectId;
 
-            return RedirectToAction("AssignUsers", new { projectId = model.ProjectId });
+            if(model.UserToRemoveId != null)
+            {
+                _btProjectService.RemoveProjectUser(model.ProjectId, model.UserToRemoveId);
+                return RedirectToAction("AssignUsers", new { projectId = model.ProjectId });
+            }
+            else
+            {
+                AssignUsers assignUsers = new AssignUsers();
+
+                assignUsers.ProjectId = _btProjectService.GetProject(projectId).Id;
+                assignUsers.ProjectName = _btProjectService.GetProject(projectId).Name;
+                assignUsers.UsersAssignedtoProject = _btProjectService.GetUsersAssignedToProject(projectId);
+                assignUsers.UsersNotAssignedToProject = _btProjectService.GetUsersNotAssignedToProject(projectId);
+                assignUsers.ErrorMessage = "Invalid option. Please select valid option.";
+
+                return View(@"Views\ProjectUsers\AssignUsers.cshtml", assignUsers);
+            }
+
+        
+
+            
         }
     }
 }

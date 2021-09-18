@@ -26,7 +26,7 @@ namespace BugTrackerV16.Services
             _userManager = userManager;
         }
 
-        
+      
         public bool AddProjectUser(int projectId, string userId)
         {
               

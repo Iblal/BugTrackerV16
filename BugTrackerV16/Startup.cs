@@ -41,7 +41,7 @@ namespace BugTrackerV16
             services.AddControllersWithViews();
             services.AddScoped<IBTProjectService, BTProjectService>();
             services.AddScoped<IBTHelperService, HelperFunctionsService>();
-                
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

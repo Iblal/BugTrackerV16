@@ -17,7 +17,6 @@ namespace BugTrackerV16.Entities
         [Column(TypeName = "nvarchar(100)")]
         public string LastName { get; set; }
 
-        [NotMapped]
-        public virtual ICollection<Project> Projects { get; set; } = new HashSet<Project>();
+        
     }
 }

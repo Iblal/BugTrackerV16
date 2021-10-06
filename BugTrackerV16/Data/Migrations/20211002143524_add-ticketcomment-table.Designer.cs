@@ -4,14 +4,16 @@ using BugTrackerV16.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BugTrackerV16.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211002143524_add-ticketcomment-table")]
+    partial class addticketcommenttable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,10 +202,6 @@ namespace BugTrackerV16.Data.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Comment");
-
-                    b.Property<string>("CommentUserId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CommentUserId");
 
                     b.Property<string>("CreatedDate")
                         .HasColumnType("nvarchar(max)")

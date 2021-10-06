@@ -27,7 +27,24 @@ namespace BugTrackerV16.Controllers
             _projectService = ProjectService;
         }
 
-        // GET: Tickets
+
+
+        public IActionResult AddTicketComment([Bind("Id,Comment,TicketId,CreatedDate,CommentUserId")] TicketComment ticketComment)
+        {
+
+              
+            
+
+            if (ticketComment != null)
+            {
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Details");
+
+        }
+
+
         public async Task<IActionResult> myTicketsIndex()
         {
             return View(await _context.Tickets
@@ -51,6 +68,7 @@ namespace BugTrackerV16.Controllers
         // GET: Tickets/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            
             if (id == null)
             {
                 return NotFound();
@@ -62,6 +80,10 @@ namespace BugTrackerV16.Controllers
             {
                 return NotFound();
             }
+
+            ticket.TicketComments = _context.TicketComments
+             .Where(ticketComment => ticketComment.TicketId == id)
+             .ToList();
 
             return View(ticket);
         }
@@ -88,14 +110,13 @@ namespace BugTrackerV16.Controllers
             DateTime currentDateTime = DateTime.Now;
             ticket.CreatedDate = currentDateTime.ToString();
 
-
             if (ModelState.IsValid)
             {
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("myTicketsIndex");
             }
-            return RedirectToAction("myTicketsIndex");
+           return RedirectToAction("myTicketsIndex");
         }
 
         // GET: Tickets/Edit/5

@@ -38,5 +38,8 @@ namespace BugTrackerV16.Entities
         [Column("CreatedDate")]
         public string CreatedDate { get; set; }
 
+        [NotMapped]
+        public List<TicketComment> TicketComments { get; set; }
+
     }
 }

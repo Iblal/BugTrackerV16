@@ -22,6 +22,29 @@ namespace BugTrackerV16.Services
             _userManager = userManager;
         }
 
+        public List<IdentityRole> GetUserRoles(BugTrackerV16User user)
+        {
+            List<IdentityRole> UserRoles = new List<IdentityRole>();
+
+            var userRolesIds = _context.UserRoles
+                .Where(role => role.UserId == user.Id)
+                .Select(role => role.RoleId)
+                .ToList();
+
+            foreach (var roleId in userRolesIds)
+            {
+
+                var userRole = _context.Roles
+                .Where(role => role.Id == roleId)
+                .FirstOrDefault();
+
+                UserRoles.Add(userRole);
+            }
+
+            return UserRoles;
+
+        }
+
         public BugTrackerV16User GetUser(string userid)
         {
             var User = _context.Users

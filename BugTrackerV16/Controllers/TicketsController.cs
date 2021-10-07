@@ -99,7 +99,7 @@ namespace BugTrackerV16.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,ReportedByUser,AssignedToUser,Status,ProjectId,CreatedDate")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,ReportedByUser,AssignedToUser,Priority,Status,ProjectId,CreatedDate")] Ticket ticket)
         {
 
             ticket.ReportedByUser = _BTHelperService.GetUser(_userManager.GetUserId(User)).FirstName;

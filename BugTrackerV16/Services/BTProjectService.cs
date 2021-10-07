@@ -26,7 +26,15 @@ namespace BugTrackerV16.Services
             _userManager = userManager;
         }
 
-      
+        public List<Ticket> GetProjectTickets(int projectId)
+        {
+            var tickets = _context.Tickets
+                .Where(ticket => ticket.ProjectId == projectId)
+                .ToList();
+
+            return tickets;
+        }
+
         public bool AddProjectUser(int projectId, string userId)
         {
               

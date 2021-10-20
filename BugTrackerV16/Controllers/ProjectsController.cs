@@ -35,6 +35,36 @@ namespace BugTrackerV16.Controllers
             return View(await _context.Projects.ToListAsync());
         }
 
+        public async Task<IActionResult> ArchivedProjectsIndex()
+        {
+            var archivedProjects = await _context.Projects
+                .Where(project => project.Archived == true)
+                .ToListAsync();
+
+            return View(archivedProjects);
+        }
+
+        public IActionResult ArchiveProject(int projectId)
+        {
+
+            var project = _projectService.GetProject(projectId);
+
+            return View(@"\Views\Projects\ArchiveConfirm.cshtml", project);
+
+        }
+
+        public IActionResult ArchiveConfirm(int projectId)
+        {
+            
+            var projectEntity = _context.Projects.First(project => project.Id == projectId);
+            projectEntity.Archived = true;
+            _context.SaveChanges();
+
+
+            return RedirectToAction("myProjectsIndex");
+
+        }
+
         public async Task<IActionResult> myProjectsIndex()
         {
             List<Project> UserProjects = new List<Project>();

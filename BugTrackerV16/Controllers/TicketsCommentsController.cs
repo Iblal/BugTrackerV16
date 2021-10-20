@@ -56,7 +56,7 @@ namespace BugTrackerV16.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(include:"Id, Comment, TicketId")] TicketComment ticketComment)
-        {
+         {
 
             ticketComment.CommentUserId = _userManager.GetUserId(User);
 
@@ -65,8 +65,16 @@ namespace BugTrackerV16.Controllers
 
              _context.TicketComments.Add(ticketComment);
 
-            if(ticketComment != null)
+            var ticket = _context.Tickets
+                .Where(ticket => ticket.Id == ticketComment.TicketId)
+                .FirstOrDefault();
+
+            
+
+            if (ticketComment != null)
             {
+                ticket.DateUpdated = currentDateTime;
+
                 _context.SaveChanges();
             }
 

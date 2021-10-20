@@ -41,6 +41,12 @@ namespace BugTrackerV16.Entities
         [Column("Priority")]
         public string Priority { get; set; }
 
+        [Column("DateUpdated")]
+        public DateTime DateUpdated { get; set; }
+
+        [Column("Type")]
+        public string Type { get; set; }
+
         [NotMapped]
         public List<TicketComment> TicketComments { get; set; }
 

@@ -10,6 +10,8 @@ namespace BugTrackerV16.Services.Interfaces
     public interface IBTProjectService
     {
         public Project GetProject(int projectId);
+        public List<Ticket> GetCriticalProjectTickets(int projectId);
+        public List<Ticket> GetResolvedProjectTickets(int projectId);
         public List<Ticket> GetProjectTickets(int projectId);
         public List<Project> GetAllProjects();
         public List<BugTrackerV16User> GetUsersAssignedToProject(int projectId);

@@ -1,10 +1,18 @@
 ﻿@page
 @model LoginModel
+@using Microsoft.AspNetCore;
+@using BugTrackerV16.Entities;
+
+
+@inject SignInManager<BugTrackerV16User> _signInManager
+@inject UserManager<BugTrackerV16User> _userManager
 
 @{
     ViewData["Title"] = "Log in";
     Layout = null;
 }
+
+
 
 <head>
     <meta charset="utf-8" />
@@ -21,7 +29,7 @@
     <div class="container">
         <div class="row">
 
-            <div id="big-title" class="col-md-5 mr-3" >
+            <div id="big-title" class="col-md-5 mr-3">
                 <h1>Bug Tracker</h1>
                 <h2>A complete solution to track errors in software</h2>
                 <h4>
@@ -35,25 +43,20 @@
                 </div>
             </div>
 
-           
+
 
             <div id="sign-in" class="col-md-6">
                 <div>
                     <div id="demo" class="row">
                         <div>
                             <h2>Live demos</h2>
-                            <div class="row" id="demo-buttons" >
+                            <div class="row" id="demo-buttons">
                                 <div class="col-md-6">
-
-                                    <input type="submit" value="Submitter" class="btn btn-secondary" />
-
-
+                                    <a class="btn btn-secondary" href=@Url.Action("SubmitterDemoLogin", "Demo")>Submitter</a>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
 
-
-                                    <input type="submit" value="Developer" class="btn btn-secondary" />
-
+                                    <a class="btn btn-secondary" href=@Url.Action("DeveloperDemoLogin", "Demo")>Developer</a>
 
                                 </div>
                             </div>
@@ -62,12 +65,13 @@
                             <div class="row">
                                 <div class="col-md-6 mr-2 mt-2">
 
-                                    <input type="submit" value="Project Manager" class="btn btn-secondary" />
+                                    <a class="btn btn-secondary" href=@Url.Action("ProjectManagerDemoLogin", "Demo")>ProjectManager</a>
 
                                 </div>
                                 <div class="col-md-4 mt-2">
 
-                                    <input type="submit" value="Admin" class="btn btn-secondary" />
+                                    <a class="btn btn-secondary" href=@Url.Action("AdminDemoLogin", "Demo")>Admin</a>
+
                                 </div>
                             </div>
                         </div>
@@ -113,7 +117,7 @@
                 </div>
             </div>
         </div>
-  </div>
+    </div>
 </body>
 
 @section Scripts {

@@ -61,23 +61,30 @@
                 <td>
                     @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit |</a> 
-}
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit |</a>
+                    }
 
                     @if (item.ProjectManagerUserId == _userManager.GetUserId(User))
                     {
-                        <a href=@Url.Action("AssignUsers", "ProjectUsers", new { projectId = item.Id })>Assign Users |</a> 
-}
+                        <a href=@Url.Action("AssignUsers", "ProjectUsers", new { projectId = item.Id })>Assign Users |</a>
+                    }
 
-                    <a asp-action="Details" asp-route-id="@item.Id">Details |</a> 
+                    <a asp-action="Details" asp-route-id="@item.Id">Details |</a>
+
 
                     @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
                     {
                         <a asp-action="Delete" asp-route-id="@item.Id">Delete |</a>
                     }
-                    <a href=@Url.Action("ProjectTicketsIndex", "Tickets", new { projectId = item.Id })>View Project Tickets</a> 
+
+                    
+
+                    <a href=@Url.Action("ProjectTicketsIndex", "Tickets", new { projectId = item.Id })>View Project Tickets</a>
                 </td>
             </tr>
          }
     </tbody>
 </table>
+<div>
+    <a asp-controller="Projects" asp-action="Index">View all projects</a>
+</div>

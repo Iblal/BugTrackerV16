@@ -143,7 +143,23 @@ namespace BugTrackerV16.Services
             return allProjects;
         }
 
-       
+        public List<Ticket> GetCriticalProjectTickets(int projectId)
+        {
+            var criticalProjectTickets = _context.Tickets
+                 .Where(ticket => ticket.ProjectId == projectId && ticket.Priority == "Critical")
+                 .ToList();
+
+            return criticalProjectTickets;
+        }
+
+        public List<Ticket> GetResolvedProjectTickets(int projectId)
+        {
+            var resolvedProjectTickets = _context.Tickets
+                .Where(ticket => ticket.ProjectId == projectId && ticket.Status == "Resolved")
+                .ToList();
+
+            return resolvedProjectTickets;
+        }
     }
    
 }

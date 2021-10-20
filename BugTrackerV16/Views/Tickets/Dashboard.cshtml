@@ -1,8 +1,8 @@
 ﻿@using BugTrackerV16.Services.Interfaces;
 
 @inject IBTProjectService BTProjectService
-@inject IBTHelperService HelperFunctionsService  
- 
+@inject IBTHelperService HelperFunctionsService
+
 @model IEnumerable<BugTrackerV16.Entities.Ticket>
 
 @{
@@ -10,7 +10,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Project Tickets</h1>
+<h1>My dashboard</h1>
+
+<br />
+
+<h2>Recently updated tickets</h2>
 
 @if (User.IsInRole("ProjectManager") || User.IsInRole("Submitter"))
 {
@@ -48,8 +52,12 @@
                 Project
             </th>
             <th>
-                Created Date
+                Updated
             </th>
+            <th>
+                Created
+            </th>
+
             <th></th>
         </tr>
     </thead>
@@ -97,11 +105,14 @@
                 @Html.DisplayFor(modelItem => item.ProjectName)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.DateUpdated)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.CreatedDate)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit |</a>
+                <a asp-action="Details" asp-route-id="@item.Id">Details |</a>
                 @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
                 {
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete |</a>
@@ -112,5 +123,26 @@
     </tbody>
 </table>
 <div>
-    <a asp-controller="Projects" asp-action="myProjectsIndex">Back to my projects</a>
+    <a asp-controller="Tickets" asp-action="Index">View All Tickets</a>
+</div>
+<br />
+<h2>Projects</h2>
+<br />
+<div class="row">
+    @foreach (var project in BTProjectService.GetAllProjects())
+    {
+       <div class="col-3">
+            <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">
+                <img src="@Url.Content("~/Content/Images/project-icon.png")"/>
+            </a><br>
+            <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">@project.Name</a><br>
+            <span><b>Tickets:  </b> @BTProjectService.GetProjectTickets(project.Id).ToArray().Length</span><br>
+            <span><b>Critical: </b> @BTProjectService.GetCriticalProjectTickets(project.Id).ToArray().Length</span><br>
+            <span><b>Resolved: </b> @BTProjectService.GetResolvedProjectTickets(project.Id).ToArray().Length </span><br>
+        </div>
+    }
+</div>
+<br />
+<div>
+  <a asp-controller="Projects" asp-action="myProjectsIndex">View All Projects</a>
 </div>

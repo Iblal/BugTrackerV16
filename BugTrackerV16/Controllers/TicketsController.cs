@@ -9,6 +9,9 @@ using BugTrackerV16.Data;
 using BugTrackerV16.Entities;
 using Microsoft.AspNetCore.Identity;
 using BugTrackerV16.Services.Interfaces;
+using X.PagedList;
+using X.PagedList.Mvc;
+
 
 namespace BugTrackerV16.Controllers
 {
@@ -27,30 +30,34 @@ namespace BugTrackerV16.Controllers
             _projectService = ProjectService;
         }
 
-
-
-        public IActionResult AddTicketComment([Bind("Id,Comment,TicketId,CreatedDate,CommentUserId")] TicketComment ticketComment)
+        public async Task<IActionResult> Index()
         {
-
-              
+            var allTickets = await _context.Tickets
+            .ToListAsync();
             
 
-            if (ticketComment != null)
-            {
-                _context.SaveChanges();
-            }
-
-            return RedirectToAction("Details");
-
+            return View(allTickets);
         }
+
+        public async Task<IActionResult> Dashboard()
+        {
+            var recentlyUpdatedTickets = await _context.Tickets
+            .OrderByDescending(t => t.DateUpdated)
+            .ToListAsync();
+
+            return View(recentlyUpdatedTickets);
+        }
+
+        
 
 
         public async Task<IActionResult> myTicketsIndex()
         {
-            return View(await _context.Tickets
-                .Where(ticket => ticket.AssignedToUser == _BTHelperService.GetUser(_userManager.GetUserId(User)).FirstName)
-                .ToListAsync());
-            
+            var tickets = await _context.Tickets
+                 .Where(ticket => ticket.AssignedToUser == _BTHelperService.GetUser(_userManager.GetUserId(User)).FirstName)
+                 .ToListAsync();
+
+            return View(tickets); 
                 
         }
 
@@ -103,12 +110,25 @@ namespace BugTrackerV16.Controllers
         {
 
             ticket.ReportedByUser = _BTHelperService.GetUser(_userManager.GetUserId(User)).FirstName;
-            ticket.Status = "Unresolved";
+            
+            if(ticket.AssignedToUser == "Not Assigned")
+            {
+                ticket.Status = "New";
+            }
+            else
+            {
+                ticket.Status = "Waiting for support";
+            }
+
+            
             ticket.ProjectName = _projectService.GetProject(ticket.ProjectId).Name;
+
             
 
             DateTime currentDateTime = DateTime.Now;
             ticket.CreatedDate = currentDateTime.ToString();
+
+            ticket.DateUpdated = currentDateTime;
 
             if (ModelState.IsValid)
             {
@@ -140,7 +160,7 @@ namespace BugTrackerV16.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ReportedByUserID,AssignedToUserID,Status,ProjectID,CreatedDate")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Type,AssignedToUser,Status,ProjectID,CreatedDate")] Ticket ticket)
         {
             if (id != ticket.Id)
             {
@@ -156,6 +176,11 @@ namespace BugTrackerV16.Controllers
 
                         var ticketEntity = _context.Tickets.First(ticket => ticket.Id == id);
                         ticketEntity.Name = ticket.Name;
+
+                        DateTime currentDateTime = DateTime.Now;
+
+                        ticketEntity.DateUpdated = currentDateTime;
+
                         _context.SaveChanges();
 
                     }
@@ -164,6 +189,11 @@ namespace BugTrackerV16.Controllers
                     {
                         var ticketEntity = _context.Tickets.First(ticket => ticket.Id == id);
                         ticketEntity.Description = ticket.Description;
+
+                        DateTime currentDateTime = DateTime.Now;
+
+                        ticketEntity.DateUpdated = currentDateTime;
+
                         _context.SaveChanges();
                     }
 
@@ -171,6 +201,11 @@ namespace BugTrackerV16.Controllers
                     {
                         var ticketEntity = _context.Tickets.First(ticket => ticket.Id == id);
                         ticketEntity.AssignedToUser = ticket.AssignedToUser;
+
+                        DateTime currentDateTime = DateTime.Now;
+
+                        ticketEntity.DateUpdated = currentDateTime;
+
                         _context.SaveChanges();
                     }
 
@@ -178,8 +213,38 @@ namespace BugTrackerV16.Controllers
                     {
                         var ticketEntity = _context.Tickets.First(ticket => ticket.Id == id);
                         ticketEntity.Status = ticket.Status;
+
+                        DateTime currentDateTime = DateTime.Now;
+
+                        ticketEntity.DateUpdated = currentDateTime;
+
                         _context.SaveChanges();
                     }
+
+                    if (ticket.Type != null)
+                    {
+                        var ticketEntity = _context.Tickets.First(ticket => ticket.Id == id);
+                        ticketEntity.Type = ticket.Type;
+
+                        DateTime currentDateTime = DateTime.Now;
+
+                        ticketEntity.DateUpdated = currentDateTime;
+
+                        _context.SaveChanges();
+                    }
+
+                    if (ticket.Priority != null)
+                    {
+                        var ticketEntity = _context.Tickets.First(ticket => ticket.Id == id);
+                        ticketEntity.Priority = ticket.Priority;
+
+                        DateTime currentDateTime = DateTime.Now;
+
+                        ticketEntity.DateUpdated = currentDateTime;
+
+                        _context.SaveChanges();
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

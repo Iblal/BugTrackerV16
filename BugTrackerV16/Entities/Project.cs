@@ -29,6 +29,7 @@ namespace BugTrackerV16.Entities
         [Column("ProjectManagerName")]
         public string ProjectManagerName { get; set; }
 
-
+        [Column("Archived")]
+        public bool Archived { get; set; }
     }
 }
